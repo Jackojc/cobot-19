@@ -131,7 +131,9 @@ def generate(data):
 
 
 	for i, (country, info) in enumerate(data.items()):
-		print(f"[{i + 1}/{num_countries}] {country}")
+		printer = f"[{i + 1}/{num_countries}] {country}"
+		print(f"\r{printer} [......]", end = "")
+
 
 		dates = [x["date"] for x in info]
 
@@ -153,10 +155,9 @@ def generate(data):
 
 
 
-		print(f"\trendering {country} graphs...")
 
 
-
+		print(f"\r{printer} [=.....]", end = "")
 		cum = render_linechart(
 			title = f"Cumulative graph for {country}",
 			names = ["Cases", "Deaths"],
@@ -166,6 +167,7 @@ def generate(data):
 		)
 
 
+		print(f"\r{printer} [==....]", end = "")
 		daily = render_barchart(
 			title = f"Daily graph for {country}",
 			names = ["Cases", "Deaths"],
@@ -175,38 +177,36 @@ def generate(data):
 		)
 
 
-		print(f"\tcumulative...")
 		with open(path + "/cum.png", "wb") as f:
 			f.write(cum)
 
 
-		print(f"\tdaily...")
 		with open(path + "/daily.png", "wb") as f:
 			f.write(daily)
 
 
 
-		print(f"\tcumulative_cases...")
+		print(f"\r{printer} [===...]", end = "")
 		with open(path + "/cum_cases.png", "wb") as f:
 			f.write(render_cumulative_cases(country, dates, cumulative_cases))
 
 
-		print(f"\tcumulative_deaths...")
+		print(f"\r{printer} [====..]", end = "")
 		with open(path + "/cum_deaths.png", "wb") as f:
 			f.write(render_cumulative_deaths(country, dates, cumulative_deaths))
 
 
-		print(f"\tdaily_cases...")
+		print(f"\r{printer} [=====.]", end = "")
 		with open(path + "/daily_cases.png", "wb") as f:
 			f.write(render_daily_cases(country, dates, daily_cases))
 
 
-		print(f"\tdaily_deaths...")
+		print(f"\r{printer} [======]", end = "")
 		with open(path + "/daily_deaths.png", "wb") as f:
 			f.write(render_daily_deaths(country, dates, daily_deaths))
 
 
-		print("\tdone!")
+		print(f"\r{printer} [ done ]")
 
 
 
