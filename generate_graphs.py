@@ -3,6 +3,8 @@
 import plotly.graph_objects as go
 import plotly.io as plotio
 
+plotio.orca.config.server_url = "127.0.0.1:9091"
+
 import shutil
 import json
 import os

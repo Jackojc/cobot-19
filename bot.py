@@ -5,6 +5,7 @@ from fuzzywuzzy import process
 import argparse
 import discord
 import json
+import os
 import io
 
 
@@ -77,7 +78,7 @@ stat.add_argument(
 parser.add_argument(
 	"country",
 	type = str,
-	nargs = "?",
+	nargs = "*",
 	default = "",
 	help = "the country to get stats for."
 )

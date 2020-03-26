@@ -2,6 +2,7 @@
 
 import requests
 import json
+import os
 
 
 
@@ -126,6 +127,9 @@ if __name__ == "__main__":
 		trimmed_data["World"].append(world)
 
 
+
+	if not os.path.isdir("data"):
+		os.mkdir("data")
 
 	with open("data/data.json", "w") as f:
 		f.write(json.dumps(trimmed_data, indent = 4))
