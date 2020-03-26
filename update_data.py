@@ -15,27 +15,9 @@ if __name__ == "__main__":
 		print(f"Error while fetching new data. http {r.status_code}")
 
 	data = r.json()
-	trimmed_data = {}
+
 
 	for country, info in data.items():
-		for i, entry in enumerate(info):
-			cases      = entry["confirmed"]
-			deaths     = entry["deaths"]
-
-			cases      = cases > 0
-			deaths     = deaths > 0
-
-			# If we find an entry which has at least one
-			# value >0, we can assume that all following entries will
-			# >0 too. We add one previous day before the countries first
-			# case so we can plot it properly.
-			if any([cases, deaths]):
-				trimmed_data[country] = info[max(i - 1, 0):]
-				break
-
-
-
-	for country, info in trimmed_data.items():
 		info[0]["daily"] = {
 			"confirmed": 0,
 			"deaths": 0
@@ -66,7 +48,7 @@ if __name__ == "__main__":
 			prev_deaths     = info[i]["cumulative"]["deaths"]
 
 
-			trimmed_data[country][i + 1]["daily"] = {
+			data[country][i + 1]["daily"] = {
 				"confirmed": abs(prev_cases - cases),
 				"deaths":    abs(prev_deaths - deaths)
 			}
@@ -76,7 +58,7 @@ if __name__ == "__main__":
 
 	timeline = {}
 
-	for country, days in trimmed_data.items():
+	for country, days in data.items():
 		for day in days:
 			date = day["date"]
 
@@ -109,8 +91,8 @@ if __name__ == "__main__":
 			daily_deaths    += today_deaths
 
 
-		if "World" not in trimmed_data:
-			trimmed_data["World"] = []
+		if "World" not in data:
+			data["World"] = []
 
 		world = {
 			"date": day,
@@ -124,7 +106,27 @@ if __name__ == "__main__":
 			}
 		}
 
-		trimmed_data["World"].append(world)
+		data["World"].append(world)
+
+
+	trimmed_data = {}
+
+	for country, info in data.items():
+		for i, entry in enumerate(info):
+			cases      = entry["cumulative"]["confirmed"]
+			deaths     = entry["cumulative"]["deaths"]
+
+			cases      = cases > 0
+			deaths     = deaths > 0
+
+			# If we find an entry which has at least one
+			# value >0, we can assume that all following entries will
+			# >0 too. We add one previous day before the countries first
+			# case so we can plot it properly.
+			if any([cases, deaths]):
+				trimmed_data[country] = info[max(i - 1, 0):]
+				break
+
 
 
 
