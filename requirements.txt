@@ -1,6 +1,5 @@
-python-Levenshtein
 discord-py
 plotly
 requests
-fuzzywuzzy
+rapidfuzz
 shutil
