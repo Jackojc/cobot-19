@@ -1,6 +1,8 @@
 # cobot-19
 A discord bot which graphs current statistics relating to Covid-19.
 
+Invite: https://discordapp.com/oauth2/authorize?&client_id=690568808154398772&scope=bot&permissions=51200
+
 Required packages:
 - Plotly
 - Requests
