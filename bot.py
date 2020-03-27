@@ -89,12 +89,12 @@ modes.set_defaults(mode = "cumulative")
 stat.set_defaults(stat = "all")
 
 
-# parser.add_argument(
-# 	"-r", "--refresh",
-# 	action = "store_true",
-# 	dest = "refresh",
-# 	help = "do not use the cached graph, force it to be rendered anew."
-# )
+parser.add_argument(
+	"-l", "--logarithmic",
+	action = "store_true",
+	dest = "log",
+	help = "use a logarithmic scale for y-axis."
+)
 
 
 
@@ -104,7 +104,7 @@ FILE_CACHE = {}
 
 
 
-def get_graph(country, mode, stat):
+def get_graph(country, mode, stat, log):
 	path = "graphs/" + "".join(
 		[x for x in country.lower().replace(" ", "_") if x in "abcdefghijklmnopqrstuvwxyz_0123456789"]
 	) + "/"
@@ -118,14 +118,20 @@ def get_graph(country, mode, stat):
 
 
 
-	if stat == "all":
-		path += ".png"
+	# if stat == "all":
+	# 	path += ".png"
 
-	elif stat == "cases":
-		path += "_cases.png"
+	if stat == "cases":
+		path += "_cases"
 
 	elif stat == "deaths":
-		path += "_deaths.png"
+		path += "_deaths"
+
+
+	if log:
+		path += "_log"
+
+	path += ".png"
 
 
 	return path
@@ -256,7 +262,7 @@ class Client(discord.Client):
 		stat = parsed_args.stat
 
 
-		path = get_graph(country, mode, stat)
+		path = get_graph(country, mode, stat, parsed_args.log)
 		embed = get_embed(country, mode, data)
 
 		print(f"\t{path}")
