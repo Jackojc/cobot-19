@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from fuzzywuzzy import process
+from rapidfuzz import process
 
 import argparse
 import discord
