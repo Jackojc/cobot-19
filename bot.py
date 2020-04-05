@@ -167,9 +167,9 @@ def get_embed(country, mode, data):
 			url = "https://github.com/Jackojc/cobot-19"
 		)
 
-		embed.add_field(name="Total cases", value=f"{cases}")
-		embed.add_field(name="Total deaths", value=f"{deaths}")
-		embed.add_field(name="Total recovered", value=f"{recovered}")
+		embed.add_field(name="Total cases", value=f"{cases:,}")
+		embed.add_field(name="Total deaths", value=f"{deaths:,}")
+		embed.add_field(name="Total recovered", value=f"{recovered:,}")
 
 
 	elif mode == "daily":
@@ -184,9 +184,9 @@ def get_embed(country, mode, data):
 			url = "https://github.com/Jackojc/cobot-19"
 		)
 
-		embed.add_field(name="New cases today", value=f"{cases}")
-		embed.add_field(name="New deaths today", value=f"{deaths}")
-		embed.add_field(name="New recovered today", value=f"{recovered}")
+		embed.add_field(name="New cases today", value=f"{cases:,}")
+		embed.add_field(name="New deaths today", value=f"{deaths:,}")
+		embed.add_field(name="New recovered today", value=f"{recovered:,}")
 
 
 	return embed
