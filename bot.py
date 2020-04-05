@@ -215,9 +215,6 @@ class Client(discord.Client):
 
 
 
-
-
-
 		parsed_args = None
 
 		try:
@@ -263,10 +260,16 @@ class Client(discord.Client):
 
 		else:
 			country = " ".join(country)
-			match, confidence = process.extractOne(country, data.keys())
+			extract = process.extractOne(country, data.keys())
+
+			match = ""
+			confidence = 0
+
+			if extract is not None:
+				match, confidence = extract
 
 			if confidence < 90:
-				await message.channel.send(f"\t'{country}' is unknown or may not have any cases.")
+				await message.channel.send(f"\t'{country}' is not a known country or may not have any cases.")
 				return
 
 			print(f"\tconfidence: {confidence}")
