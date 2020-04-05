@@ -14,10 +14,12 @@ import os
 
 
 
-
-
-
 def render_barchart(title, names, dates, datas, colours, scale = 2, type = "linear"):
+	if type == "log":
+		datas = [x[1:] for x in datas]
+		dates = dates[1:]
+
+
 	fig = go.Figure(data = [
 		go.Bar(name = name, x = dates, y = item, marker_color = colour) for
 			name, item, colour in zip(names, datas, colours)
@@ -58,6 +60,16 @@ def render_daily_deaths(country, dates, deaths):
 	)
 
 
+def render_daily_recovered(country, dates, recovered):
+	return render_barchart(
+		title = f"Daily recovered in {country}",
+		names = ["Recovered"],
+		dates = dates,
+		datas = [recovered],
+		colours = ["yellowgreen"]
+	)
+
+
 def render_daily_cases_log(country, dates, cases):
 	return render_barchart(
 		title = f"Daily cases in {country}",
@@ -80,6 +92,15 @@ def render_daily_deaths_log(country, dates, deaths):
 	)
 
 
+def render_daily_recovered_log(country, dates, recovered):
+	return render_barchart(
+		title = f"Daily recovered in {country}",
+		names = ["Recovered"],
+		dates = dates,
+		datas = [recovered],
+		colours = ["yellowgreen"],
+		type = "log"
+	)
 
 
 
@@ -90,6 +111,11 @@ def render_daily_deaths_log(country, dates, deaths):
 
 
 def render_linechart(title, names, dates, datas, colours, scale = 2, type = "linear"):
+	if type == "log":
+		datas = [x[1:] for x in datas]
+		dates = dates[1:]
+
+
 	fig = go.Figure()
 
 	for name, data, colour in zip(names, datas, colours):
@@ -138,6 +164,16 @@ def render_cumulative_deaths(country, dates, deaths):
 	)
 
 
+def render_cumulative_recovered(country, dates, recovered):
+	return render_linechart(
+		title = f"Cumulative recovered in {country}",
+		names = ["Recovered"],
+		dates = dates,
+		datas = [recovered],
+		colours = ["yellowgreen"]
+	)
+
+
 def render_cumulative_cases_log(country, dates, cases):
 	return render_linechart(
 		title = f"Cumulative cases in {country}",
@@ -160,6 +196,15 @@ def render_cumulative_deaths_log(country, dates, deaths):
 	)
 
 
+def render_cumulative_recovered_log(country, dates, recovered):
+	return render_linechart(
+		title = f"Cumulative recovered in {country}",
+		names = ["Recovered"],
+		dates = dates,
+		datas = [recovered],
+		colours = ["yellowgreen"],
+		type = "log"
+	)
 
 
 
@@ -178,7 +223,7 @@ def generate(data):
 
 	for i, (country, info) in enumerate(data.items()):
 		printer = f"[{i + 1}/{num_countries}]"
-		print(f"\r{printer} [............] {country}", end = "")
+		print(f"\r{printer} [................] {country}", end = "")
 
 
 		dates = [x["date"] for x in info]
@@ -186,9 +231,11 @@ def generate(data):
 
 		cumulative_cases     = [x["cumulative"]["confirmed"] for x in info]
 		cumulative_deaths    = [x["cumulative"]["deaths"] for x in info]
+		cumulative_recovered = [x["cumulative"]["recovered"] for x in info]
 
 		daily_cases     = [x["daily"]["confirmed"] for x in info]
 		daily_deaths    = [x["daily"]["deaths"] for x in info]
+		daily_recovered = [x["daily"]["recovered"] for x in info]
 
 
 		path = "graphs/" + "".join(
@@ -203,50 +250,50 @@ def generate(data):
 
 
 
-		print(f"\r{printer} [=...........] {country}", end = "")
+		print(f"\r{printer} [=...............] {country}", end = "")
 		cum = render_linechart(
 			title = f"Cumulative graph for {country}",
-			names = ["Cases", "Deaths"],
+			names = ["Cases", "Deaths", "Recovered"],
 			dates = dates,
-			datas = [cumulative_cases, cumulative_deaths],
-			colours = ["red", "darkgrey"]
+			datas = [cumulative_cases, cumulative_deaths, cumulative_recovered],
+			colours = ["red", "darkgrey", "yellowgreen"]
 		)
 		with open(path + "/cum.png", "wb") as f:
 			f.write(cum)
 
 
-		print(f"\r{printer} [==..........] {country}", end = "")
+		print(f"\r{printer} [==..............] {country}", end = "")
 		daily = render_barchart(
 			title = f"Daily graph for {country}",
-			names = ["Cases", "Deaths"],
+			names = ["Cases", "Deaths", "Recovered"],
 			dates = dates,
-			datas = [daily_cases, daily_deaths],
-			colours = ["red", "darkgrey"]
+			datas = [daily_cases, daily_deaths, daily_recovered],
+			colours = ["red", "darkgrey", "yellowgreen"]
 		)
 		with open(path + "/daily.png", "wb") as f:
 			f.write(daily)
 
 
-		print(f"\r{printer} [===.........] {country}", end = "")
+		print(f"\r{printer} [===.............] {country}", end = "")
 		cum_log = render_linechart(
 			title = f"Cumulative graph for {country}",
-			names = ["Cases", "Deaths"],
+			names = ["Cases", "Deaths", "Recovered"],
 			dates = dates,
-			datas = [cumulative_cases, cumulative_deaths],
-			colours = ["red", "darkgrey"],
+			datas = [cumulative_cases, cumulative_deaths, cumulative_recovered],
+			colours = ["red", "darkgrey", "yellowgreen"],
 			type = "log"
 		)
 		with open(path + "/cum_log.png", "wb") as f:
 			f.write(cum_log)
 
 
-		print(f"\r{printer} [====........] {country}", end = "")
+		print(f"\r{printer} [====............] {country}", end = "")
 		daily_log = render_barchart(
 			title = f"Daily graph for {country}",
-			names = ["Cases", "Deaths"],
+			names = ["Cases", "Deaths", "Recovered"],
 			dates = dates,
-			datas = [daily_cases, daily_deaths],
-			colours = ["red", "darkgrey"],
+			datas = [daily_cases, daily_deaths, daily_recovered],
+			colours = ["red", "darkgrey", "yellowgreen"],
 			type = "log"
 		)
 		with open(path + "/daily_log.png", "wb") as f:
@@ -262,47 +309,68 @@ def generate(data):
 
 
 
-		print(f"\r{printer} [=====.......] {country}", end = "")
+		print(f"\r{printer} [=====...........] {country}", end = "")
 		with open(path + "/cum_cases.png", "wb") as f:
 			f.write(render_cumulative_cases(country, dates, cumulative_cases))
 
 
-		print(f"\r{printer} [======......] {country}", end = "")
+		print(f"\r{printer} [======..........] {country}", end = "")
 		with open(path + "/cum_deaths.png", "wb") as f:
 			f.write(render_cumulative_deaths(country, dates, cumulative_deaths))
 
 
-		print(f"\r{printer} [=======.....] {country}", end = "")
+		print(f"\r{printer} [=======.........] {country}", end = "")
+		with open(path + "/cum_recovered.png", "wb") as f:
+			f.write(render_cumulative_recovered(country, dates, cumulative_recovered))
+
+
+		print(f"\r{printer} [========........] {country}", end = "")
 		with open(path + "/cum_cases_log.png", "wb") as f:
 			f.write(render_cumulative_cases_log(country, dates, cumulative_cases))
 
 
-		print(f"\r{printer} [========....] {country}", end = "")
+		print(f"\r{printer} [=========.......] {country}", end = "")
 		with open(path + "/cum_deaths_log.png", "wb") as f:
 			f.write(render_cumulative_deaths_log(country, dates, cumulative_deaths))
 
 
-		print(f"\r{printer} [=========...] {country}", end = "")
+		print(f"\r{printer} [==========......] {country}", end = "")
+		with open(path + "/cum_recovered_log.png", "wb") as f:
+			f.write(render_cumulative_recovered_log(country, dates, cumulative_recovered))
+
+
+		print(f"\r{printer} [===========.....] {country}", end = "")
 		with open(path + "/daily_cases.png", "wb") as f:
 			f.write(render_daily_cases(country, dates, daily_cases))
 
 
-		print(f"\r{printer} [==========..] {country}", end = "")
+		print(f"\r{printer} [============....] {country}", end = "")
 		with open(path + "/daily_deaths.png", "wb") as f:
 			f.write(render_daily_deaths(country, dates, daily_deaths))
 
 
-		print(f"\r{printer} [===========.] {country}", end = "")
+		print(f"\r{printer} [=============...] {country}", end = "")
+		with open(path + "/daily_recovered.png", "wb") as f:
+			f.write(render_daily_recovered(country, dates, daily_recovered))
+
+
+		print(f"\r{printer} [==============..] {country}", end = "")
 		with open(path + "/daily_cases_log.png", "wb") as f:
 			f.write(render_daily_cases_log(country, dates, daily_cases))
 
 
-		print(f"\r{printer} [============] {country}", end = "")
+		print(f"\r{printer} [===============.] {country}", end = "")
 		with open(path + "/daily_deaths_log.png", "wb") as f:
 			f.write(render_daily_deaths_log(country, dates, daily_deaths))
 
 
-		print(f"\r{printer} [    done    ] {country}")
+		print(f"\r{printer} [================] {country}", end = "")
+		with open(path + "/daily_recovered_log.png", "wb") as f:
+			f.write(render_daily_recovered_log(country, dates, daily_recovered))
+
+
+
+		print(f"\r{printer} [      done      ] {country}")
 
 
 

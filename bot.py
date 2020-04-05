@@ -74,6 +74,14 @@ stat.add_argument(
 	help = "show stats for deaths."
 )
 
+stat.add_argument(
+	"-d", "--recovered",
+	action = "store_const",
+	dest = "stat",
+	const = "recovered",
+	help = "show stats for recovered."
+)
+
 
 parser.add_argument(
 	"country",
@@ -127,6 +135,9 @@ def get_graph(country, mode, stat, log):
 	elif stat == "deaths":
 		path += "_deaths"
 
+	elif stat == "recovered":
+		path += "_recovered"
+
 
 	if log:
 		path += "_log"
@@ -147,6 +158,7 @@ def get_embed(country, mode, data):
 	if mode == "cumulative":
 		cases      = data[-1]["cumulative"]["confirmed"]
 		deaths     = data[-1]["cumulative"]["deaths"]
+		recovered  = data[-1]["cumulative"]["recovered"]
 
 		embed = discord.Embed(
 			title = f"Covid-19",
@@ -156,11 +168,13 @@ def get_embed(country, mode, data):
 
 		embed.add_field(name="Total cases", value=f"{cases}")
 		embed.add_field(name="Total deaths", value=f"{deaths}")
+		embed.add_field(name="Total recovered", value=f"{recovered}")
 
 
 	elif mode == "daily":
 		cases      = data[-1]["daily"]["confirmed"]
 		deaths     = data[-1]["daily"]["deaths"]
+		recovered  = data[-1]["daily"]["recovered"]
 
 		embed = discord.Embed(
 			title = f"Covid-19",
@@ -170,6 +184,7 @@ def get_embed(country, mode, data):
 
 		embed.add_field(name="New cases today", value=f"{cases}")
 		embed.add_field(name="New deaths today", value=f"{deaths}")
+		embed.add_field(name="New recovered today", value=f"{recovered}")
 
 
 	return embed
@@ -248,8 +263,8 @@ class Client(discord.Client):
 			country = " ".join(country)
 			match, confidence = process.extractOne(country, data.keys())
 
-			if confidence < 95:
-				await message.channel.send(f"\t'{country}' does not match any known countries.")
+			if confidence < 90:
+				await message.channel.send(f"\t'{country}' is unknown or may not have any cases.")
 				return
 
 			print(f"\tconfidence: {confidence}")
@@ -263,14 +278,18 @@ class Client(discord.Client):
 
 
 		path = get_graph(country, mode, stat, parsed_args.log)
+
 		embed = get_embed(country, mode, data)
+		embed.url("https://github.com/Jackojc/cobot-19")
+
 
 		print(f"\t{path}")
 
 
 		with open(path, "rb") as f:
 			f = discord.File(f, filename = "graph.png")
-			await message.channel.send(file = f, content = "", embed = embed)
+			embed.image("attachment://graph.png")
+			await message.channel.send(file = f, embed = embed)
 
 
 

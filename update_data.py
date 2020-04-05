@@ -20,37 +20,45 @@ if __name__ == "__main__":
 	for country, info in data.items():
 		info[0]["daily"] = {
 			"confirmed": 0,
-			"deaths": 0
+			"deaths": 0,
+			"recovered": 0
 		}
 
 		del info[0]["confirmed"]
 		del info[0]["deaths"]
+		del info[0]["recovered"]
 
 		info[0]["cumulative"] = {
 			"confirmed": 0,
-			"deaths": 0
+			"deaths": 0,
+			"recovered": 0
 		}
 
 
 		for i, x in enumerate(info[1:]):
 			cases      = x["confirmed"]
 			deaths     = x["deaths"]
+			recovered  = x["recovered"]
 
 			del x["confirmed"]
 			del x["deaths"]
+			del x["recovered"]
 
 			x["cumulative"] = {
 				"confirmed": cases,
-				"deaths": deaths
+				"deaths": deaths,
+				"recovered": recovered
 			}
 
 			prev_cases      = info[i]["cumulative"]["confirmed"]
 			prev_deaths     = info[i]["cumulative"]["deaths"]
+			prev_recovered  = info[i]["cumulative"]["recovered"]
 
 
 			data[country][i + 1]["daily"] = {
 				"confirmed": abs(prev_cases - cases),
-				"deaths":    abs(prev_deaths - deaths)
+				"deaths":    abs(prev_deaths - deaths),
+				"recovered":    abs(prev_recovered - recovered)
 			}
 
 
@@ -72,23 +80,29 @@ if __name__ == "__main__":
 	for day, countries in timeline.items():
 		total_confirmed = 0
 		total_deaths    = 0
+		total_recovered = 0
 
 		daily_confirmed = 0
 		daily_deaths    = 0
+		daily_recovered = 0
 
 		for country in countries:
 			confirmed = timeline[day][country]["cumulative"]["confirmed"]
 			deaths    = timeline[day][country]["cumulative"]["deaths"]
+			recovered = timeline[day][country]["cumulative"]["recovered"]
 
 			today_confirmed = timeline[day][country]["daily"]["confirmed"]
 			today_deaths    = timeline[day][country]["daily"]["deaths"]
+			today_recovered = timeline[day][country]["daily"]["recovered"]
 
 
 			total_confirmed += confirmed
 			total_deaths    += deaths
+			total_recovered += recovered
 
 			daily_confirmed += today_confirmed
 			daily_deaths    += today_deaths
+			daily_recovered += today_recovered
 
 
 		if "World" not in data:
@@ -98,11 +112,13 @@ if __name__ == "__main__":
 			"date": day,
 			"cumulative": {
 				"confirmed": total_confirmed,
-				"deaths": total_deaths
+				"deaths": total_deaths,
+				"recovered": total_recovered
 			},
 			"daily": {
 				"confirmed": daily_confirmed,
-				"deaths": daily_deaths
+				"deaths": daily_deaths,
+				"recovered": daily_recovered
 			}
 		}
 
@@ -115,18 +131,24 @@ if __name__ == "__main__":
 		for i, entry in enumerate(info):
 			cases      = entry["cumulative"]["confirmed"]
 			deaths     = entry["cumulative"]["deaths"]
+			recovered  = entry["cumulative"]["recovered"]
 
 			cases      = cases > 0
 			deaths     = deaths > 0
+			recovered  = recovered > 0
 
 			# If we find an entry which has at least one
 			# value >0, we can assume that all following entries will
 			# >0 too. We add one previous day before the countries first
 			# case so we can plot it properly.
-			if any([cases, deaths]):
+			if any([cases, deaths, recovered]):
 				trimmed_data[country] = info[max(i - 1, 0):]
 				break
 
+
+	for country in list(trimmed_data.keys()):
+		new_key = "".join([x for x in country if x.lower() in "abcdefghijklmnopqrstuvwxyz "])
+		trimmed_data[new_key] = trimmed_data.pop(country)
 
 
 
