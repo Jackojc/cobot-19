@@ -288,6 +288,11 @@ class Client(discord.Client):
 		print(f"\t{path}")
 
 
+		if not os.path.isfile(path):
+			await message.channel.send("cannot attach graph, it may not be generated yet.")
+			return
+
+
 		with open(path, "rb") as f:
 			f = discord.File(f, filename = "graph.png")
 			embed.set_image(url="attachment://graph.png")
