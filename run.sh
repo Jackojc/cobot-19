@@ -18,8 +18,8 @@ fi
 i=0
 
 while true; do
-	# update every 5 hours
-	if [ "$i" = "18000" ]; then
+	# update every 2 hours
+	if [ "$i" = "7200" ]; then
 		echo "updating data and graphs"
 
 		./update_data.py
@@ -29,8 +29,9 @@ while true; do
 	fi
 
 
-	if [ $(( i % 3600 )) -eq 0 ]; then
-		hours_left=$(( ( 18000 - ( i / 3600 ) ) / 3600 ))
+	# notify of remaining time every 15 mins
+	if [ $(( i % 900 )) -eq 0 ]; then
+		hours_left=$(( ( 7200 / 3600 ) - ( i / 3600 ) ))
 		echo "updating in $hours_left hours"
 	fi
 

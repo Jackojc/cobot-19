@@ -75,7 +75,7 @@ stat.add_argument(
 )
 
 stat.add_argument(
-	"-d", "--recovered",
+	"-r", "--recovered",
 	action = "store_const",
 	dest = "stat",
 	const = "recovered",
@@ -163,7 +163,8 @@ def get_embed(country, mode, data):
 		embed = discord.Embed(
 			title = f"Covid-19",
 			description = f"Cumulative statistics for Covid-19 in {country}",
-			color = 0x55ff55
+			color = 0x55ff55,
+			url = "https://github.com/Jackojc/cobot-19"
 		)
 
 		embed.add_field(name="Total cases", value=f"{cases}")
@@ -179,7 +180,8 @@ def get_embed(country, mode, data):
 		embed = discord.Embed(
 			title = f"Covid-19",
 			description = f"Daily statistics for Covid-19 in {country}",
-			color = 0xff55ff
+			color = 0xff55ff,
+			url = "https://github.com/Jackojc/cobot-19"
 		)
 
 		embed.add_field(name="New cases today", value=f"{cases}")
@@ -278,17 +280,14 @@ class Client(discord.Client):
 
 
 		path = get_graph(country, mode, stat, parsed_args.log)
-
 		embed = get_embed(country, mode, data)
-		embed.url("https://github.com/Jackojc/cobot-19")
-
 
 		print(f"\t{path}")
 
 
 		with open(path, "rb") as f:
 			f = discord.File(f, filename = "graph.png")
-			embed.image("attachment://graph.png")
+			embed.set_image(url="attachment://graph.png")
 			await message.channel.send(file = f, embed = embed)
 
 
