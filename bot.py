@@ -299,7 +299,7 @@ class Client(discord.Client):
 			return
 
 
-		with open("pic.png", "rb") as logo:
+		with open("logo.png", "rb") as logo:
 			logo = discord.File(logo, filename = "logo.png")
 
 		with open(path, "rb") as f:
