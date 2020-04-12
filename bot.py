@@ -167,6 +167,8 @@ def get_embed(country, mode, data):
 			url = "https://github.com/Jackojc/cobot-19"
 		)
 
+		embed.set_author(name="Cobot-19", url="https://discordapp.com/oauth2/authorize?&client_id=690568808154398772&scope=bot&permissions=51200", icon_url="attachment://logo.png")
+
 		embed.add_field(name="Support me", value="https://liberapay.com/Jackojc/", inline=False)
 		embed.add_field(name="Total cases", value=f"{cases:,}")
 		embed.add_field(name="Total deaths", value=f"{deaths:,}")
@@ -184,6 +186,8 @@ def get_embed(country, mode, data):
 			color = 0xff55ff,
 			url = "https://github.com/Jackojc/cobot-19"
 		)
+
+		embed.set_author(name="Cobot-19", url="https://discordapp.com/oauth2/authorize?&client_id=690568808154398772&scope=bot&permissions=51200", icon_url="attachment://logo.png")
 
 		embed.add_field(name="Support me", value="https://liberapay.com/Jackojc/", inline=False)
 		embed.add_field(name="New cases today", value=f"{cases:,}")
@@ -295,10 +299,13 @@ class Client(discord.Client):
 			return
 
 
+		with open("pic.png", "rb") as logo:
+			logo = discord.File(logo, filename = "logo.png")
+
 		with open(path, "rb") as f:
 			f = discord.File(f, filename = "graph.png")
 			embed.set_image(url="attachment://graph.png")
-			await message.channel.send(file = f, embed = embed)
+			await message.channel.send(files = [f, logo], embed = embed)
 
 
 
