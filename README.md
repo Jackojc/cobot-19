@@ -11,5 +11,5 @@ Orca must be installed and running as a local server, I personally use docker as
 To use the bot, first create a file named "token.txt" and insert your bot token into it, then run `run.sh`.
 Obviously you will need a bot account and have invited the bot to your server.
 
-![example](logo.png)
+![example](pic.png)
 

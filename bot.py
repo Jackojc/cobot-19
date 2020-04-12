@@ -161,7 +161,7 @@ def get_embed(country, mode, data):
 		recovered  = data[-1]["cumulative"]["recovered"]
 
 		embed = discord.Embed(
-			title = f"Covid-19",
+			title = f"Covid-19 Statistics",
 			description = f"Cumulative statistics for Covid-19 in {country}",
 			color = 0x55ff55,
 			url = "https://github.com/Jackojc/cobot-19"
@@ -181,7 +181,7 @@ def get_embed(country, mode, data):
 		recovered  = data[-1]["daily"]["recovered"]
 
 		embed = discord.Embed(
-			title = f"Covid-19",
+			title = f"Covid-19 Statistics",
 			description = f"Daily statistics for Covid-19 in {country}",
 			color = 0xff55ff,
 			url = "https://github.com/Jackojc/cobot-19"
