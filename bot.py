@@ -167,6 +167,7 @@ def get_embed(country, mode, data):
 			url = "https://github.com/Jackojc/cobot-19"
 		)
 
+		embed.add_field(name="Support me", value="https://liberapay.com/Jackojc/", inline=False)
 		embed.add_field(name="Total cases", value=f"{cases:,}")
 		embed.add_field(name="Total deaths", value=f"{deaths:,}")
 		embed.add_field(name="Total recovered", value=f"{recovered:,}")
