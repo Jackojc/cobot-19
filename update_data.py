@@ -34,6 +34,8 @@ if __name__ == "__main__":
 			"recovered": 0
 		}
 
+		info[0]["active"] = 0
+
 
 		for i, x in enumerate(info[1:]):
 			cases      = x["confirmed"]
@@ -61,6 +63,7 @@ if __name__ == "__main__":
 				"recovered":    abs(prev_recovered - recovered)
 			}
 
+			x["active"] = cases - (deaths + recovered)
 
 
 
@@ -76,7 +79,7 @@ if __name__ == "__main__":
 			if country not in timeline[date]:
 				timeline[date][country] = day
 
-
+	# Data for all cases globally for a certain day
 	for day, countries in timeline.items():
 		total_confirmed = 0
 		total_deaths    = 0
@@ -85,6 +88,8 @@ if __name__ == "__main__":
 		daily_confirmed = 0
 		daily_deaths    = 0
 		daily_recovered = 0
+
+		total_active 	= 0
 
 		for country in countries:
 			confirmed = timeline[day][country]["cumulative"]["confirmed"]
@@ -95,6 +100,7 @@ if __name__ == "__main__":
 			today_deaths    = timeline[day][country]["daily"]["deaths"]
 			today_recovered = timeline[day][country]["daily"]["recovered"]
 
+			today_active = timeline[day][country]["active"]
 
 			total_confirmed += confirmed
 			total_deaths    += deaths
@@ -103,6 +109,8 @@ if __name__ == "__main__":
 			daily_confirmed += today_confirmed
 			daily_deaths    += today_deaths
 			daily_recovered += today_recovered
+
+			total_active += today_active
 
 
 		if "World" not in data:
@@ -119,7 +127,8 @@ if __name__ == "__main__":
 				"confirmed": daily_confirmed,
 				"deaths": daily_deaths,
 				"recovered": daily_recovered
-			}
+			},
+			"active": total_active
 		}
 
 		data["World"].append(world)

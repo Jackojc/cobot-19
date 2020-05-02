@@ -48,6 +48,13 @@ modes.add_argument(
 	help = "plot daily statistics."
 )
 
+modes.add_argument(
+	"-A", "--active",
+	action = "store_const",
+	dest = "mode",
+	const = "active",
+	help = "plat active cases"
+)
 
 
 stat.add_argument(
@@ -117,26 +124,27 @@ def get_graph(country, mode, stat, log):
 		[x for x in country.lower().replace(" ", "_") if x in "abcdefghijklmnopqrstuvwxyz_0123456789"]
 	) + "/"
 
+	if mode == "active":
+		path += "active"
 
-	if mode == "cumulative":
-		path += "cum"
+	else:
+		if mode == "cumulative":
+			path += "cum"
 
-	elif mode == "daily":
-		path += "daily"
+		elif mode == "daily":
+			path += "daily"
 
+		# if stat == "all":
+		# 	path += ".png"
 
+		if stat == "cases":
+			path += "_cases"
 
-	# if stat == "all":
-	# 	path += ".png"
+		elif stat == "deaths":
+			path += "_deaths"
 
-	if stat == "cases":
-		path += "_cases"
-
-	elif stat == "deaths":
-		path += "_deaths"
-
-	elif stat == "recovered":
-		path += "_recovered"
+		elif stat == "recovered":
+			path += "_recovered"
 
 
 	if log:
@@ -194,6 +202,19 @@ def get_embed(country, mode, data):
 		embed.add_field(name="New deaths today", value=f"{deaths:,}")
 		embed.add_field(name="New recovered today", value=f"{recovered:,}")
 
+
+	elif mode == "active":
+		active = data[-1]["active"]
+		embed = discord.Embed(
+			title = f"Covid-19 Statistics",
+			description = f"Active cases for Covid-19 in {country}",
+			color = 0xff55ff,
+			url = "https://github.com/Jackojc/cobot-19"
+		)
+
+		embed.set_author(name="Cobot-19", url="https://discordapp.com/oauth2/authorize?&client_id=690568808154398772&scope=bot&permissions=51200", 	icon_url="attachment://logo.png")
+		embed.add_field(name="Support me", value="https://liberapay.com/Jackojc/", inline=False)
+		embed.add_field(name="Active cases today", value=f"{active:,}")
 
 	return embed
 
